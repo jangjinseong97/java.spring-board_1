@@ -33,4 +33,10 @@ insert 쿼리문 작성
         FROM board
         ORDER BY board_id DESC
     </select>
+
+    <select id="selBoardOne">
+        SELECT board_id AS boardId, title, contents, writer, created_at AS createdAt
+        FROM board
+        WHERE board_id = #{board_id}
+    </select>
 </mapper>

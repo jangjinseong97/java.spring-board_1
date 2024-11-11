@@ -10,8 +10,7 @@ package com.green.board;
 
     insert, update, delete의 리턴타입은 int로 하면됨
  */
-import com.green.board.model.BoardInsReq;
-import com.green.board.model.BoardSelRes;
+import com.green.board.model.*;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
@@ -19,4 +18,5 @@ import java.util.List;
 public interface BoardMapper {
     int insBoard(BoardInsReq p);
     List<BoardSelRes> selBoardList();
+    BoardSelOneRes selBoardOne(int p);
 }
