@@ -1,8 +1,11 @@
 package com.green.board;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.green.board.model.BoardInsReq;
+import com.green.board.model.BoardSelRes;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /*
     controller의 역할: 요청(request)을 받고 응답(response)을 처리하는 객체
@@ -29,12 +32,23 @@ import org.springframework.web.bind.annotation.RestController;
 
     get과 post 방식의 큰 차이점은 데이터를 보낼때 보여지나 안보여지나 차이
     1. 쿼리스트링 방식 (파라미터라고 부르기도 함), url에 데이터를 포함하는 방식
-    2. body에 담아서 보내는 방식
+    2. body에 담아서 보내는 방식(Form date, JSON)
 
     쿼리스트링 모양 : url + 쿼리스트링 (?로 시작 key=value, 여러개라면 & 구분)
                    www.naver.com?name=홍길동&age=12&height=172.1 이런 방식
 
     대용량의 데이터를 보내야 할때 body 사용 (url의 길이 제한으로 인해 쿼리스트링은 한계가 있다.)
+
+    JSON(JavaScript Object Notation) : 자바스크립트에서 객체를 만들때 사용하는 문법을 이용하여
+                                       데이터를 표현하는 포맷(형식), Key와 Value로 이루어짐
+    예를 들어 name은 홍길도, age는 22살, height는 178.2 데이터를 JSON으로 표현하면
+    {
+        "name": "홍길동",
+        "age": 22,
+        "height": 178.2
+    }
+    이렇게 표현하는 문자열이다. {}는 객체를 의미 []는 배열을 의미
+    ""는 문자열, 숫자는 ""없이 표현, Key는 무조건 ""로 감싸줘야 된다.
 
     Restful 이전에는 get, post방식만 있었음
     get은 주로 쿼리스트링 방식 - 데이터를 읽어올 떄(간혹 삭제할때도 사용)
@@ -87,14 +101,32 @@ import org.springframework.web.bind.annotation.RestController;
     7. (delete) /board - 글 삭제(5번처럼 path variable이나 4번처럼 쿼리스트링으로 pk값 전달)
 
  */
-@RestController
+@RestController // 빈 등록 + 컨트롤러 임명, 빈등록은 스프링 컨테이너가 직접 객체화를 한다.
 @RequestMapping("/board")
+
+@RequiredArgsConstructor //final이 붙은 맴버필드 DI받을 수 있게 생성자를 만듬
+// 이 에노테이션 생략시 오버로딩된 생성자를 직접 만들어 줘야됨
 public class BoardController {
+    private final BoardService boardService;
     //insert(create)
     @PostMapping // (post) /board 요청이 오면 이 메소드가 응답해주는 것(응답 담당자)
 
     //@PostMapping("/board") 위의 RequestMapping이 없었더라면 이런 식으로 URL을 따로 작성
-    public int insBoard(){
-        return 1;
+    public int insBoard(@RequestBody BoardInsReq p){
+        // 지금기준 postman의 자료가 여기로 먼저 들어오게 되는것
+        // 이때 그 자료를 BoardInsReq의 객체로 전환해서 온다.
+        // @RequestBody 는 요청이 올때 데이터가 JSON 형태로 오므로
+        // 거기에 맞춰 데이터를 받으라는 의미
+        // 없으면 FormDate 형태로 오게됨
+        System.out.println(p);
+
+        return boardService.insBoard(p);
+        // 리턴값을 수정하지 않았던 것
+    }
+
+    @GetMapping
+    // 객체 > JSON으로 바꾸는 작업을 해주지 않았음에도 restcontroller로 인해 자동으로 바꿔줌
+    public List<BoardSelRes> selBoard(){
+        return boardService.selBoard();
     }
 }
