@@ -111,6 +111,8 @@ import java.util.List;
 
 public class BoardController {
     private final BoardService boardService;
+    // 이거 붙이는 이유는 아래으 메소드 내부에서 전체적으로 사용하기 위하여 DI 때문
+    // 또한 final로 인해 requiredargsconstrucotr로 모든 필드에 생성자가 자동으로 생김
 //    public  BoardController(BoardService boardService) {
 //        this.boardService = boardService;
 //    } @RequiredArgsConstructor 로 인해 작성이 되어 있는 것
