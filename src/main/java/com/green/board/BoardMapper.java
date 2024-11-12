@@ -16,7 +16,11 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
+    // @Mapper는 해당 interface 가 dao를 만드는데 쓰이는 것을 의미
     int insBoard(BoardInsReq p);
     List<BoardSelRes> selBoardList();
     BoardSelOneRes selBoardOne(int p);
+    int updBoard(BoardUpdReq p);
+    // 몇개의 행에 영향을 주었냐 이므로
+    int delBoard(BoardDelReq p);
 }

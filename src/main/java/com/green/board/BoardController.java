@@ -1,8 +1,6 @@
 package com.green.board;
 
-import com.green.board.model.BoardInsReq;
-import com.green.board.model.BoardSelOneRes;
-import com.green.board.model.BoardSelRes;
+import com.green.board.model.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -108,13 +106,19 @@ import java.util.List;
 //해당 에노테이션이 붙은 클래스의 메소드에 달린 주소관련 에노테이션에 공통적으로 작성됨
 
 @RequiredArgsConstructor //final이 붙은 맴버필드 DI받을 수 있게 생성자를 만듬
+// DI 의존성 주입 외부에서 주소값이 주입될때 부름 >빈등록이 안되면 DI 못받음
 // 이 에노테이션 생략시 오버로딩된 생성자를 직접 만들어 줘야됨
+
 public class BoardController {
     private final BoardService boardService;
+//    public  BoardController(BoardService boardService) {
+//        this.boardService = boardService;
+//    } @RequiredArgsConstructor 로 인해 작성이 되어 있는 것
+
     //insert(create)
     @PostMapping // (post) /board 요청이 오면 이 메소드가 응답해주는 것(응답 담당자)
-
     //@PostMapping("/board") 위의 RequestMapping이 없었더라면 이런 식으로 URL을 따로 작성
+    // 여기의 경우에는 RequestMapping 때문에 /board 가 생각되어 있는것
     public int insBoard(@RequestBody BoardInsReq p){
         // 지금기준 postman의 자료가 여기로 먼저 들어오게 되는것
         // 이때 그 자료를 BoardInsReq의 객체로 전환해서 온다.
@@ -136,6 +140,24 @@ public class BoardController {
     @GetMapping("/{boardId}")
     // @RequestMapping("/board")로 인해 /board/{boardId}에서 앞의 /board를 안적어도 되는 것
     public BoardSelOneRes selOneBoard(@PathVariable int boardId){
+        // 위의 {boardId} 의 값이 들어가는것
         return boardService.selOneBoard(boardId);
+    }
+
+    @PutMapping
+    public int updBoard(@RequestBody BoardUpdReq p){
+        System.out.println(p);
+        return boardService.updBoard(p);
+    }
+    /*
+    @ModelAttribute : FormDate or Query String 데이터를 받을 수 있다.
+    타입앞에 에노테이션 생략이 이 에노테이션이 자동으로 들어감
+
+    get과 delete 때는 굳이 requestbody 를 안씀 body로 데이터를 받을 이유가 없으니
+    > query string을 받아 씀 저위에 작성했떤것
+     */
+    @DeleteMapping
+    public int delBoard(BoardDelReq p){
+        return boardService.delBoard(p);
     }
 }
